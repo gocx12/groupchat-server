@@ -203,10 +203,11 @@ int main(int argc, char* argv[]) {
     setnonblocking(sig_pipefd[1]);
     addfd(epollfd, sig_pipefd[0]);
 
-    addsig(SIGCHLD, sig_handler);
-    addsig(SIGTERM, sig_handler);
-    addsig(SIGINT, sig_handler);
-    addsig(SIGPIPE, SIG_IGN);
+    // 为父进程设置信号处理方式
+    addsig(SIGCHLD, sig_handler); // 子进程状态发生改变（退出或者暂停）
+    addsig(SIGTERM, sig_handler); // 终止进程
+    addsig(SIGINT, sig_handler);  // 键盘输入以终端进程（Ctrl + C）
+    addsig(SIGPIPE, SIG_IGN);     // 想读端关闭的管道或socket中写入数据，忽略本信号，不处理
     bool stop_server = false;
     bool terminate = false;
     
